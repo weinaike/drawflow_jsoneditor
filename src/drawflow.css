@@ -61,15 +61,25 @@
   margin-bottom: 5px;
 }
 
+
+.drawflow .drawflow-node .output .output-name {
+  margin-left: 20px; /* 设置名称和圆框之间的距离 */
+}
+
+
+.drawflow .drawflow-node .output {
+  right: -3px;
+  top: 2px;
+  display: flex;
+  align-items: center;
+}
+
 .drawflow .drawflow-node .input {
   left: -27px;
   top: 2px;
   background: yellow;
 }
-.drawflow .drawflow-node .output {
-  right: -3px;
-  top: 2px;
-}
+
 
 .drawflow svg {
   z-index: 0;

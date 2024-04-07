@@ -1180,7 +1180,7 @@ export default class Drawflow {
     return nodes;
   }
 
-  addNode (name, num_in, num_out, ele_pos_x, ele_pos_y, classoverride, data, html, typenode = false) {
+  addNode (name, num_in, num_out, ele_pos_x, ele_pos_y, classoverride, data, html, output_names, typenode = false) {
     if (this.useuuid) {
       var newNodeId = this.getUuid();
     } else {
@@ -1217,34 +1217,45 @@ export default class Drawflow {
       const output = document.createElement('div');
       output.classList.add("output");
       output.classList.add("output_"+(x+1));
+
+      const outputName = document.createElement('span');
+      outputName.classList.add("output-name");
+      outputName.textContent = output_names[x];
+      output.appendChild(outputName);
+      
       json_outputs["output_"+(x+1)] = { "connections": []};
       outputs.appendChild(output);
+    }
+    const json_output_names = {}
+    for(var x = 0; x < output_names.length; x++) {
+      json_output_names["output_"+(x+1)] = output_names[x];
     }
 
     const content = document.createElement('div');
     content.classList.add("drawflow_content_node");
-    if(typenode === false) {
-      content.innerHTML = html;
-    } else if (typenode === true) {
-      content.appendChild(this.noderegister[html].html.cloneNode(true));
-    } else {
-      if(parseInt(this.render.version) === 3 ) {
-        //Vue 3
-        let wrapper = this.render.h(this.noderegister[html].html, this.noderegister[html].props, this.noderegister[html].options);
-        wrapper.appContext = this.parent;
-        this.render.render(wrapper,content);
+    content.innerHTML = html;
+    // if(typenode === false) {
+    //   content.innerHTML = html;
+    // } else if (typenode === true) {
+    //   content.appendChild(this.noderegister[html].html.cloneNode(true));
+    // } else {
+    //   if(parseInt(this.render.version) === 3 ) {
+    //     //Vue 3
+    //     let wrapper = this.render.h(this.noderegister[html].html, this.noderegister[html].props, this.noderegister[html].options);
+    //     wrapper.appContext = this.parent;
+    //     this.render.render(wrapper,content);
 
-      } else {
-        // Vue 2
-        let wrapper = new this.render({
-          parent: this.parent,
-          render: h => h(this.noderegister[html].html, { props: this.noderegister[html].props }),
-          ...this.noderegister[html].options
-        }).$mount()
-        //
-        content.appendChild(wrapper.$el);
-      }
-    }
+    //   } else {
+    //     // Vue 2
+    //     let wrapper = new this.render({
+    //       parent: this.parent,
+    //       render: h => h(this.noderegister[html].html, { props: this.noderegister[html].props }),
+    //       ...this.noderegister[html].options
+    //     }).$mount()
+    //     //
+    //     content.appendChild(wrapper.$el);
+    //   }
+    // }
 
     Object.entries(data).forEach(function (key, value) {
       if(typeof key[1] === "object") {
@@ -1295,11 +1306,12 @@ export default class Drawflow {
       data: data,
       class: classoverride,
       html: html,
-      typenode: typenode,
+      typenode: typenode, // 替换为单通道或者多通道属性
       inputs: json_inputs,
       outputs: json_outputs,
       pos_x: ele_pos_x,
       pos_y: ele_pos_y,
+      output_names: json_output_names
     }
     this.drawflow.drawflow[this.module].data[newNodeId] = json;
     this.dispatch('nodeCreated', newNodeId);
@@ -1355,33 +1367,39 @@ export default class Drawflow {
       const output = document.createElement('div');
       output.classList.add("output");
       output.classList.add("output_"+(x+1));
+
+      const outputName = document.createElement('span');
+      outputName.classList.add("output-name");
+      outputName.textContent = dataNode.output_names["output_"+(x+1)]; // 使用提供的名称
+      output.appendChild(outputName);
+
       outputs.appendChild(output);
     }
 
     const content = document.createElement('div');
     content.classList.add("drawflow_content_node");
+    content.innerHTML = dataNode.html;
+    // if(dataNode.typenode === false) {
+    //   content.innerHTML = dataNode.html;
+    // } else if (dataNode.typenode === true) {
+    //   content.appendChild(this.noderegister[dataNode.html].html.cloneNode(true));
+    // } else {
+    //   if(parseInt(this.render.version) === 3 ) {
+    //     //Vue 3
+    //     let wrapper = this.render.h(this.noderegister[dataNode.html].html, this.noderegister[dataNode.html].props, this.noderegister[dataNode.html].options);
+    //     wrapper.appContext = this.parent;
+    //     this.render.render(wrapper,content);
 
-    if(dataNode.typenode === false) {
-      content.innerHTML = dataNode.html;
-    } else if (dataNode.typenode === true) {
-      content.appendChild(this.noderegister[dataNode.html].html.cloneNode(true));
-    } else {
-      if(parseInt(this.render.version) === 3 ) {
-        //Vue 3
-        let wrapper = this.render.h(this.noderegister[dataNode.html].html, this.noderegister[dataNode.html].props, this.noderegister[dataNode.html].options);
-        wrapper.appContext = this.parent;
-        this.render.render(wrapper,content);
-
-      } else {
-        //Vue 2
-        let wrapper = new this.render({
-          parent: this.parent,
-          render: h => h(this.noderegister[dataNode.html].html, { props: this.noderegister[dataNode.html].props }),
-          ...this.noderegister[dataNode.html].options
-        }).$mount()
-        content.appendChild(wrapper.$el);
-      }
-    }
+    //   } else {
+    //     //Vue 2
+    //     let wrapper = new this.render({
+    //       parent: this.parent,
+    //       render: h => h(this.noderegister[dataNode.html].html, { props: this.noderegister[dataNode.html].props }),
+    //       ...this.noderegister[dataNode.html].options
+    //     }).$mount()
+    //     content.appendChild(wrapper.$el);
+    //   }
+    // }
 
     Object.entries(dataNode.data).forEach(function (key, value) {
       if(typeof key[1] === "object") {

@@ -52,7 +52,8 @@
     <!-- Include the JSONEditor CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.5.6/jsoneditor.min.css" rel="stylesheet"
         type="text/css">
-
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.5.0/jszip.min.js"></script>
     <header>
         <h2>Drawflow</h2>
         <div class="github-link"><a href="https://github.com/jerosoler/Drawflow" target="_blank"><i
@@ -104,10 +105,8 @@
                         link.click();
                     }
                 </script>
+ 
                 <div class="btn-export" onclick="downloadExport()">Export</div>
-
-
-
 
                 <div class="btn-clear" onclick="editor.clearModuleSelected()">Clear</div>
                 <div class="btn-lock">
@@ -125,9 +124,6 @@
 
         <div id="jsonEditor"></div>
         <button id="jsonEditorSaveButton" >Save</button>
-
-
-
 
     <script>
 
@@ -166,51 +162,7 @@
         //   return ' M ' + start_pos_x + ' ' + start_pos_y + ' L '+ center_x +' ' +  start_pos_y  + ' L ' + center_x + ' ' +  end_pos_y  + ' L ' + end_pos_x + ' ' + end_pos_y;
         // }
 
-
-
-
-
-
         editor.start();
-
-
-
-
-
-        var welcome = `
-    <div>
-      <div class="title-box">👏 Welcome!!</div>
-      <div class="box">
-        <p>Simple flow library <b>demo</b>
-        <a href="https://github.com/jerosoler/Drawflow" target="_blank">Drawflow</a> by <b>Jero Soler</b></p><br>
-
-        <p>Multiple input / outputs<br>
-           Data sync nodes<br>
-           Import / export<br>
-           Modules support<br>
-           Simple use<br>
-           Type: Fixed or Edit<br>
-           Events: view console<br>
-           Pure Javascript<br>
-        </p>
-        <br>
-        <p><b><u>Shortkeys:</u></b></p>
-        <p>🎹 <b>Delete</b> for remove selected<br>
-        💠 Mouse Left Click == Move<br>
-        ❌ Mouse Right == Delete Option<br>
-        🔍 Ctrl + Wheel == Zoom<br>
-        📱 Mobile support<br>
-        ...</p>
-      </div>
-    </div>
-    `;
-
-
-
-        //editor.addNode(name, "typenode": false,  inputs, outputs, posx, posy, class, data, html);
-        /*editor.addNode('welcome', 0, 0, 50, 50, 'welcome', {}, welcome );
-        editor.addModule('Other');
-        */
 
         // Events!
         editor.on('nodeCreated', function (id) {
@@ -313,6 +265,8 @@
 
         }
 
+        var nodeCounter = 1;
+
         function addNodeToDrawFlow(name, pos_x, pos_y) {
             if (editor.editor_mode === 'fixed') {
                 return false;
@@ -323,57 +277,68 @@
 
             switch (name) {
                 case 'ImageSrc':
+                    var nodeName = 'ImageSrc' + nodeCounter;
                     var image = `
                                 <div>
-                                    <div class="title-box"><i class="fas fa-image"></i> Image</div>
+                                    <div class="title-box"><i class="fas fa-image"></i> ${nodeName}</div>
                                     <div>
                                     </div>
                                 </div>
                                 `;
-                    editor.addNode('ImageSrc', 0, 1, pos_x, pos_y, 'ImageSrc', { "image": '' }, image, false);
+                    
+                    editor.addNode(nodeName, 0, 1, pos_x, pos_y, 'ImageSrc', { "image": '' }, image, ["Frame"],false);
+                    nodeCounter++;
                     break;
                 case 'VideoSrc':
+                    var nodeName = 'VideoSrc' + nodeCounter;
                     var video = `
                                 <div>
-                                    <div class="title-box"><i class="fas fa-video"></i> Video</div>
+                                    <div class="title-box"><i class="fas fa-video"></i>  ${nodeName}</div>
                                     <div>
                                     </div>
 
                                 </div>
                                 `;
-                    editor.addNode('VideoSrc', 0, 1, pos_x, pos_y, 'VideoSrc', { "video": '' }, video, false);
+                    editor.addNode(nodeName, 0, 1, pos_x, pos_y, 'VideoSrc', { "video": '' }, video, ["Frame"],false);
                     // After adding the node to the editor
+                    nodeCounter++;
                     break;
                 case 'Infer':
+                    var nodeName = 'Infer' + nodeCounter;
                     var infer = `
                                 <div>
-                                    <div class="title-box"><i class="fas fa-brain"></i> Infer</div>
+                                    <div class="title-box"><i class="fas fa-brain"></i>  ${nodeName}</div>
                                     <div>
                                     </div>
                                 </div>
                                 `;
-                    editor.addNode('Infer', 1, 1, pos_x, pos_y, 'Infer', { "infer": '' }, infer, false);
+                    editor.addNode(nodeName, 1, 1, pos_x, pos_y, 'Infer', { "infer": '' }, infer, ["DetectResult"] , true);
+                    nodeCounter++;
                     break;
                 case 'Track':
+                    var nodeName = 'Infer' + nodeCounter;
                     var track = `
                                 <div>
-                                    <div class="title-box"><i class="fas fa-route"></i> Track</div>
+                                    <div class="title-box"><i class="fas fa-route"></i> ${nodeName}</div>
                                     <div>
                                     </div>
                                 </div>
                                 `;
-                    editor.addNode('Track', 1, 1, pos_x, pos_y, 'Track', { "track": '' }, track, false);
+                    editor.addNode(nodeName, 1, 1, pos_x, pos_y, 'Track', { "track": '' }, track, ["DetectResult"] ,false);
+                    nodeCounter++;
                     break;
                 case 'Base':
+                    var nodeName = 'Base' + nodeCounter;
                     // 选项下拉框
                     var base = `
                                 <div>
-                                    <div class="title-box"><i class="fas fa-lightbulb"></i> Base</div>
+                                    <div class="title-box"><i class="fas fa-lightbulb"></i> ${nodeName}</div>
                                     
                                 </div>
                                 `;
 
-                    editor.addNode('Base', 1, 1, pos_x, pos_y, 'Base', { "base": '' }, base, false);
+                    editor.addNode(nodeName, 1, 1, pos_x, pos_y, 'Base', { "base": '' }, base, ["PipelineResult"] ,false);
+                    nodeCounter++;
                     break;
 
 
