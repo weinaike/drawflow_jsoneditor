@@ -50,3 +50,11 @@ npm run build
 # json转换
 
 将json文件导入video_pipeline的tool目录下， 执行transform_json.py生成流水线需要的配置文件
+
+
+# 新增节点类型
+
+按如下两步即可步骤
+
+1. node.js中增加对应节点信息，
+2. 再index.html中 `<div class="col"> 增加显示内容`

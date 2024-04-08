@@ -14,15 +14,19 @@
             right: 0;
             width: 20%;
             /* 调整为你需要的宽度 */
-            height: calc(100% - 50px); /* 减去保存按钮的高度 */
+            height: calc(100% - 50px);
+            /* 减去保存按钮的高度 */
             /* 调整为你需要的高度 */
         }
+
         #jsonEditorSaveButton {
             position: absolute;
             right: 0;
             width: 20%;
-            height: 50px; /* 保存按钮的高度 */
-            bottom: 0; /* 将保存按钮定位在底部 */
+            height: 50px;
+            /* 保存按钮的高度 */
+            bottom: 0;
+            /* 将保存按钮定位在底部 */
             background-color: #6797d6;
             color: white;
             border: none;
@@ -52,7 +56,7 @@
     <!-- Include the JSONEditor CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.5.6/jsoneditor.min.css" rel="stylesheet"
         type="text/css">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.5.0/jszip.min.js"></script>
     <header>
         <h2>Drawflow</h2>
@@ -105,7 +109,7 @@
                         link.click();
                     }
                 </script>
- 
+
                 <div class="btn-export" onclick="downloadExport()">Export</div>
 
                 <div class="btn-clear" onclick="editor.clearModuleSelected()">Clear</div>
@@ -123,280 +127,186 @@
         </div>
 
         <div id="jsonEditor"></div>
-        <button id="jsonEditorSaveButton" >Save</button>
-
-    <script>
-
-        // 在你的JavaScript文件中，创建一个JSON编辑器
-        var container = document.getElementById("jsonEditor");
-        var jsoneditor = new JSONEditor(container, {});
-    
-        // 设置JSON数据
-        var json = {
-            "Array": [1, 2, 3],
-            "Boolean": true,
-            "Null": null,
-            "Number": 123,
-            "Object": {"a": "b", "c": "d"},
-            "String": "Hello World"
-        };
-        jsoneditor.set(json);
+        <button id="jsonEditorSaveButton">Save Node Configure</button>
+        
+        <script src="node.js"></script>
+        <script>
+            // 在你的JavaScript文件中，创建一个JSON编辑器
+            var container = document.getElementById("jsonEditor");
+            var jsoneditor = new JSONEditor(container, {});
+            // 设置JSON数据
+            var json = {};
+            jsoneditor.set(json);
 
 
-        var selectedNodeId = null;
-        document.getElementById('jsonEditorSaveButton').addEventListener('click', function() {
-            var newData = jsoneditor.get();
-            editor.updateNodeDataFromId(selectedNodeId, newData);
-        });
+            var selectedNodeId = null;
+            document.getElementById('jsonEditorSaveButton').addEventListener('click', function () {
+                var newData = jsoneditor.get();
+                editor.updateNodeDataFromId(selectedNodeId, newData);
+            });
 
 
-        var id = document.getElementById("drawflow");
-        const editor = new Drawflow(id);
-        editor.reroute = true;
-        editor.reroute_fix_curvature = true;
-        editor.force_first_input = false;
+            var id = document.getElementById("drawflow");
+            const editor = new Drawflow(id);
+            editor.reroute = true;
+            editor.reroute_fix_curvature = true;
+            editor.force_first_input = false;
 
+            editor.start();
 
-        // editor.createCurvature = function(start_pos_x, start_pos_y, end_pos_x, end_pos_y, curvature_value, type) {
-        //   var center_x = ((end_pos_x - start_pos_x)/2)+start_pos_x;
-        //   return ' M ' + start_pos_x + ' ' + start_pos_y + ' L '+ center_x +' ' +  start_pos_y  + ' L ' + center_x + ' ' +  end_pos_y  + ' L ' + end_pos_x + ' ' + end_pos_y;
-        // }
-
-        editor.start();
-
-        // Events!
-        editor.on('nodeCreated', function (id) {
-            console.log("Node created " + id);
-        })
-
-        editor.on('nodeRemoved', function (id) {
-            console.log("Node removed " + id);
-        })
-
-        editor.on('nodeSelected', function (id) {
-            console.log("Node selected " + id);
-            var nodeData = editor.getNodeFromId(id).data;
-            jsoneditor.set(nodeData);
-            selectedNodeId = id;
-        })
-
-        editor.on('moduleCreated', function (name) {
-            console.log("Module Created " + name);
-        })
-
-        editor.on('moduleChanged', function (name) {
-            console.log("Module Changed " + name);
-        })
-
-        editor.on('connectionCreated', function (connection) {
-            console.log('Connection created');
-            console.log(connection);
-        })
-
-        editor.on('connectionRemoved', function (connection) {
-            console.log('Connection removed');
-            console.log(connection);
-        })
-        /*
-            editor.on('mouseMove', function(position) {
-              console.log('Position mouse x:' + position.x + ' y:'+ position.y);
+            // Events!
+            editor.on('nodeCreated', function (id) {
+                console.log("Node created " + id);
             })
-        */
-        editor.on('nodeMoved', function (id) {
-            console.log("Node moved " + id);
-        })
 
-        editor.on('zoom', function (zoom) {
-            console.log('Zoom level ' + zoom);
-        })
+            editor.on('nodeRemoved', function (id) {
+                console.log("Node removed " + id);
+            })
 
-        editor.on('translate', function (position) {
-            console.log('Translate x:' + position.x + ' y:' + position.y);
-        })
+            editor.on('nodeSelected', function (id) {
+                console.log("Node selected " + id);
+                var nodeData = editor.getNodeFromId(id).data;
+                jsoneditor.set(nodeData);
+                selectedNodeId = id;
+            })
 
-        editor.on('addReroute', function (id) {
-            console.log("Reroute added " + id);
-        })
+            editor.on('moduleCreated', function (name) {
+                console.log("Module Created " + name);
+            })
 
-        editor.on('removeReroute', function (id) {
-            console.log("Reroute removed " + id);
-        })
-        /* DRAG EVENT */
+            editor.on('moduleChanged', function (name) {
+                console.log("Module Changed " + name);
+            })
 
-        /* Mouse and Touch Actions */
+            editor.on('connectionCreated', function (connection) {
+                console.log('Connection created');
+                console.log(connection);
+            })
 
-        var elements = document.getElementsByClassName('drag-drawflow');
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].addEventListener('touchend', drop, false);
-            elements[i].addEventListener('touchmove', positionMobile, false);
-            elements[i].addEventListener('touchstart', drag, false);
-        }
+            editor.on('connectionRemoved', function (connection) {
+                console.log('Connection removed');
+                console.log(connection);
+            })
+            /*
+                editor.on('mouseMove', function(position) {
+                  console.log('Position mouse x:' + position.x + ' y:'+ position.y);
+                })
+            */
+            editor.on('nodeMoved', function (id) {
+                console.log("Node moved " + id);
+            })
 
-        var mobile_item_selec = '';
-        var mobile_last_move = null;
-        function positionMobile(ev) {
-            mobile_last_move = ev;
-        }
+            editor.on('zoom', function (zoom) {
+                console.log('Zoom level ' + zoom);
+            })
 
-        function allowDrop(ev) {
-            ev.preventDefault();
-        }
+            editor.on('translate', function (position) {
+                console.log('Translate x:' + position.x + ' y:' + position.y);
+            })
 
-        function drag(ev) {
-            if (ev.type === "touchstart") {
-                mobile_item_selec = ev.target.closest(".drag-drawflow").getAttribute('data-node');
-            } else {
-                ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
+            editor.on('addReroute', function (id) {
+                console.log("Reroute added " + id);
+            })
+
+            editor.on('removeReroute', function (id) {
+                console.log("Reroute removed " + id);
+            })
+            /* DRAG EVENT */
+
+            /* Mouse and Touch Actions */
+
+            var elements = document.getElementsByClassName('drag-drawflow');
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].addEventListener('touchend', drop, false);
+                elements[i].addEventListener('touchmove', positionMobile, false);
+                elements[i].addEventListener('touchstart', drag, false);
             }
-        }
 
-        function drop(ev) {
-            if (ev.type === "touchend") {
-                var parentdrawflow = document.elementFromPoint(mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY).closest("#drawflow");
-                if (parentdrawflow != null) {
-                    addNodeToDrawFlow(mobile_item_selec, mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY);
-                }
-                mobile_item_selec = '';
-            } else {
+            var mobile_item_selec = '';
+            var mobile_last_move = null;
+            function positionMobile(ev) {
+                mobile_last_move = ev;
+            }
+
+            function allowDrop(ev) {
                 ev.preventDefault();
-                var data = ev.dataTransfer.getData("node");
-                addNodeToDrawFlow(data, ev.clientX, ev.clientY);
             }
 
-        }
-
-        var nodeCounter = 1;
-
-        function addNodeToDrawFlow(name, pos_x, pos_y) {
-            if (editor.editor_mode === 'fixed') {
-                return false;
-            }
-            pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
-            pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
-
-
-            switch (name) {
-                case 'ImageSrc':
-                    var nodeName = 'ImageSrc' + nodeCounter;
-                    var image = `
-                                <div>
-                                    <div class="title-box"><i class="fas fa-image"></i> ${nodeName}</div>
-                                    <div>
-                                    </div>
-                                </div>
-                                `;
-                    
-                    editor.addNode(nodeName, 0, 1, pos_x, pos_y, 'ImageSrc', { "image": '' }, image, ["Frame"],false);
-                    nodeCounter++;
-                    break;
-                case 'VideoSrc':
-                    var nodeName = 'VideoSrc' + nodeCounter;
-                    var video = `
-                                <div>
-                                    <div class="title-box"><i class="fas fa-video"></i>  ${nodeName}</div>
-                                    <div>
-                                    </div>
-
-                                </div>
-                                `;
-                    editor.addNode(nodeName, 0, 1, pos_x, pos_y, 'VideoSrc', { "video": '' }, video, ["Frame"],false);
-                    // After adding the node to the editor
-                    nodeCounter++;
-                    break;
-                case 'Infer':
-                    var nodeName = 'Infer' + nodeCounter;
-                    var infer = `
-                                <div>
-                                    <div class="title-box"><i class="fas fa-brain"></i>  ${nodeName}</div>
-                                    <div>
-                                    </div>
-                                </div>
-                                `;
-                    editor.addNode(nodeName, 1, 1, pos_x, pos_y, 'Infer', { "infer": '' }, infer, ["DetectResult"] , true);
-                    nodeCounter++;
-                    break;
-                case 'Track':
-                    var nodeName = 'Infer' + nodeCounter;
-                    var track = `
-                                <div>
-                                    <div class="title-box"><i class="fas fa-route"></i> ${nodeName}</div>
-                                    <div>
-                                    </div>
-                                </div>
-                                `;
-                    editor.addNode(nodeName, 1, 1, pos_x, pos_y, 'Track', { "track": '' }, track, ["DetectResult"] ,false);
-                    nodeCounter++;
-                    break;
-                case 'Base':
-                    var nodeName = 'Base' + nodeCounter;
-                    // 选项下拉框
-                    var base = `
-                                <div>
-                                    <div class="title-box"><i class="fas fa-lightbulb"></i> ${nodeName}</div>
-                                    
-                                </div>
-                                `;
-
-                    editor.addNode(nodeName, 1, 1, pos_x, pos_y, 'Base', { "base": '' }, base, ["PipelineResult"] ,false);
-                    nodeCounter++;
-                    break;
-
-
-                default:
-            }
-        }
-
-        var transform = '';
-        function showpopup(e) {
-            e.target.closest(".drawflow-node").style.zIndex = "9999";
-            e.target.children[0].style.display = "block";
-            //document.getElementById("modalfix").style.display = "block";
-
-            //e.target.children[0].style.transform = 'translate('+translate.x+'px, '+translate.y+'px)';
-            transform = editor.precanvas.style.transform;
-            editor.precanvas.style.transform = '';
-            editor.precanvas.style.left = editor.canvas_x + 'px';
-            editor.precanvas.style.top = editor.canvas_y + 'px';
-            console.log(transform);
-
-            //e.target.children[0].style.top  =  -editor.canvas_y - editor.container.offsetTop +'px';
-            //e.target.children[0].style.left  =  -editor.canvas_x  - editor.container.offsetLeft +'px';
-            editor.editor_mode = "fixed";
-
-        }
-
-        function closemodal(e) {
-            e.target.closest(".drawflow-node").style.zIndex = "2";
-            e.target.parentElement.parentElement.style.display = "none";
-            //document.getElementById("modalfix").style.display = "none";
-            editor.precanvas.style.transform = transform;
-            editor.precanvas.style.left = '0px';
-            editor.precanvas.style.top = '0px';
-            editor.editor_mode = "edit";
-        }
-
-        function changeModule(event) {
-            var all = document.querySelectorAll(".menu ul li");
-            for (var i = 0; i < all.length; i++) {
-                all[i].classList.remove('selected');
-            }
-            event.target.classList.add('selected');
-        }
-
-        function changeMode(option) {
-
-            //console.log(lock.id);
-            if (option == 'lock') {
-                lock.style.display = 'none';
-                unlock.style.display = 'block';
-            } else {
-                lock.style.display = 'block';
-                unlock.style.display = 'none';
+            function drag(ev) {
+                if (ev.type === "touchstart") {
+                    mobile_item_selec = ev.target.closest(".drag-drawflow").getAttribute('data-node');
+                } else {
+                    ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
+                }
             }
 
-        }
+            function drop(ev) {
+                if (ev.type === "touchend") {
+                    var parentdrawflow = document.elementFromPoint(mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY).closest("#drawflow");
+                    if (parentdrawflow != null) {
+                        addNodeToDrawFlow(mobile_item_selec, mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY);
+                    }
+                    mobile_item_selec = '';
+                } else {
+                    ev.preventDefault();
+                    var data = ev.dataTransfer.getData("node");
+                    addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+                }
 
-    </script>
+            }
+
+
+            var transform = '';
+            function showpopup(e) {
+                e.target.closest(".drawflow-node").style.zIndex = "9999";
+                e.target.children[0].style.display = "block";
+                //document.getElementById("modalfix").style.display = "block";
+
+                //e.target.children[0].style.transform = 'translate('+translate.x+'px, '+translate.y+'px)';
+                transform = editor.precanvas.style.transform;
+                editor.precanvas.style.transform = '';
+                editor.precanvas.style.left = editor.canvas_x + 'px';
+                editor.precanvas.style.top = editor.canvas_y + 'px';
+                console.log(transform);
+
+                //e.target.children[0].style.top  =  -editor.canvas_y - editor.container.offsetTop +'px';
+                //e.target.children[0].style.left  =  -editor.canvas_x  - editor.container.offsetLeft +'px';
+                editor.editor_mode = "fixed";
+
+            }
+
+            function closemodal(e) {
+                e.target.closest(".drawflow-node").style.zIndex = "2";
+                e.target.parentElement.parentElement.style.display = "none";
+                //document.getElementById("modalfix").style.display = "none";
+                editor.precanvas.style.transform = transform;
+                editor.precanvas.style.left = '0px';
+                editor.precanvas.style.top = '0px';
+                editor.editor_mode = "edit";
+            }
+
+            function changeModule(event) {
+                var all = document.querySelectorAll(".menu ul li");
+                for (var i = 0; i < all.length; i++) {
+                    all[i].classList.remove('selected');
+                }
+                event.target.classList.add('selected');
+            }
+
+            function changeMode(option) {
+
+                //console.log(lock.id);
+                if (option == 'lock') {
+                    lock.style.display = 'none';
+                    unlock.style.display = 'block';
+                } else {
+                    lock.style.display = 'block';
+                    unlock.style.display = 'none';
+                }
+
+            }
+
+        </script>
 </body>
 
 </html>
