@@ -43,6 +43,8 @@ npm run build
 
 1. 浏览器打开 index.html
 2. 配置流水线
+
+   ![My Image](image\README\1712490562834.png)
 3. export按钮到处配置json
 
 # json转换
