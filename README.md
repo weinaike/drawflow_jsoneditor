@@ -1,4 +1,8 @@
-# 依赖
+# VideoPipeline可视化配置工具
+
+该工具是为了给[VideoPipeline](https://github.com/weinaike/video_pipeline)提供可视化配置，可能未及时更新。
+
+## 依赖
 
 1. 安装Node 和 npm
 
@@ -39,7 +43,7 @@ nvm install node
 npm run build
 ```
 
-# UI配置
+## UI配置
 
 1. 浏览器打开 index.html
 2. 配置流水线
@@ -47,12 +51,11 @@ npm run build
    ![可视化配置界面](./image/README/1712490562834.png)
 3. export按钮到处配置json
 
-# json转换
+## json转换
 
 将json文件导入video_pipeline的tool目录下， 执行transform_json.py生成流水线需要的配置文件
 
-
-# 新增节点类型
+## 新增节点类型
 
 按如下两步即可步骤
 
